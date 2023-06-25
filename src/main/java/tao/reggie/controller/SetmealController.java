@@ -79,7 +79,7 @@ public class SetmealController {
     }
     
     @PostMapping
-    @CacheEvict(value="setmealCache",allEntries = true)
+//    @CacheEvict(value="setmealCache",allEntries = true)
     public R<String> save(@RequestBody SetmealDto setmealDto){
         log.info("套餐信息：{}",setmealDto);
 
@@ -88,8 +88,8 @@ public class SetmealController {
         return R.success("新增套餐成功");
     }
 
-    @DeleteMapping 
-    @CacheEvict(value="setmealCache",allEntries = true)
+    @DeleteMapping
+//    @CacheEvict(value="setmealCache",allEntries = true)
     public R<String> delete(@RequestParam List<Long> ids){
         log.info("ids:{}",ids);
         setmealService.removeWithDish(ids);
@@ -114,7 +114,7 @@ public class SetmealController {
      * @return
      */
     @GetMapping("/list")
-    @Cacheable(value="setmealCache",key="#setmeal.categoryId +'_'+ #setmeal.status")
+//    @Cacheable(value="setmealCache",key="#setmeal.categoryId +'_'+ #setmeal.status")
     public R<List<Setmeal>> list(Setmeal setmeal){
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(setmeal.getCategoryId() != null,Setmeal::getCategoryId,setmeal.getCategoryId());
