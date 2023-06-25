@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +40,9 @@ public class SetmealController {
     
     @Autowired
     private SetmealDishService setmealDishService;
+    
+    @Autowired
+    private CacheManager cacheManager;
 
     @GetMapping("/page")
     public R<Page> page(int page,int pageSize,String name){
@@ -79,7 +83,7 @@ public class SetmealController {
     }
     
     @PostMapping
-//    @CacheEvict(value="setmealCache",allEntries = true)
+    @CacheEvict(value="setmealCache",allEntries = true)
     public R<String> save(@RequestBody SetmealDto setmealDto){
         log.info("套餐信息：{}",setmealDto);
 
@@ -89,7 +93,8 @@ public class SetmealController {
     }
 
     @DeleteMapping
-//    @CacheEvict(value="setmealCache",allEntries = true)
+    //删除所有套餐缓存数据
+    @CacheEvict(value="setmealCache",allEntries = true)
     public R<String> delete(@RequestParam List<Long> ids){
         log.info("ids:{}",ids);
         setmealService.removeWithDish(ids);
@@ -113,8 +118,9 @@ public class SetmealController {
      * @param setmeal
      * @return
      */
+    //套餐展示数据缓存
+    @Cacheable(value="setmealCache",key="#setmeal.categoryId +'_'+ #setmeal.status")
     @GetMapping("/list")
-//    @Cacheable(value="setmealCache",key="#setmeal.categoryId +'_'+ #setmeal.status")
     public R<List<Setmeal>> list(Setmeal setmeal){
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(setmeal.getCategoryId() != null,Setmeal::getCategoryId,setmeal.getCategoryId());
