@@ -105,7 +105,4 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         //清空购物车数据
         shoppingCartService.remove(wrapper);
     }
-
-   
-
 }

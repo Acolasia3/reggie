@@ -53,16 +53,6 @@ public class OrderController {
         orderService.page(pageInfo,queryWrapper);
         return R.success(pageInfo);
     }
-//    
-//    @GetMapping("/page")
-//    public R<Page> page(int page,int pageSize,String number){
-//        Page pageInfo = new Page(page,pageSize);
-//        LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
-//        queryWrapper.like(StringUtils.isNotEmpty(number), Orders::getNumber,number);
-//        queryWrapper.orderByDesc(Orders::getOrderTime);
-//        orderService.page(pageInfo,queryWrapper);
-//        return R.success(pageInfo);
-//    }
 
     /**
      * 后台管理订单信息分页查询
