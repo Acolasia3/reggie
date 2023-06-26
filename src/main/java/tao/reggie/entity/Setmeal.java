@@ -2,6 +2,8 @@ package tao.reggie.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
  * 套餐
  */
 @Data
+@ApiModel("套餐")
 public class Setmeal implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -19,6 +22,7 @@ public class Setmeal implements Serializable {
 
 
     //分类id
+    @ApiModelProperty("分类")
     private Long categoryId;
 
 

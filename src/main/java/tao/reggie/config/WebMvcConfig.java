@@ -1,5 +1,6 @@
 package tao.reggie.config;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -13,6 +14,7 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import tao.reggie.common.JacksonObjectMapper;
 
 import java.util.List;
@@ -23,6 +25,8 @@ import java.util.List;
  */
 @Slf4j
 @Controller
+@EnableSwagger2
+@EnableKnife4j
 public class WebMvcConfig extends WebMvcConfigurationSupport {
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
