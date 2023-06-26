@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implements OrderService {
-
     @Autowired
     private ShoppingCartService shoppingCartService;
 
@@ -45,9 +45,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         Long userId = BaseContext.getCurrentId();
 
         //查询当前用户的购物车数据
-        LambdaQueryWrapper<ShoppingCart> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ShoppingCart::getUserId,userId);
-        List<ShoppingCart> shoppingCarts = shoppingCartService.list(queryWrapper);
+        LambdaQueryWrapper<ShoppingCart> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ShoppingCart::getUserId,userId);
+        List<ShoppingCart> shoppingCarts = shoppingCartService.list(wrapper);
 
         if(shoppingCarts == null || shoppingCarts.size() == 0){
             throw new CustomException("购物车为空，不能下单");
@@ -63,9 +63,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
             throw new CustomException("用户地址信息有误，不能下单");
         }
 
-        //数据设置
         long orderId = IdWorker.getId();//订单号
-        AtomicInteger amount = new AtomicInteger(0);//总金额
+
+        AtomicInteger amount = new AtomicInteger(0);
 
         List<OrderDetail> orderDetails = shoppingCarts.stream().map((item) -> {
             OrderDetail orderDetail = new OrderDetail();
@@ -80,7 +80,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
             amount.addAndGet(item.getAmount().multiply(new BigDecimal(item.getNumber())).intValue());
             return orderDetail;
         }).collect(Collectors.toList());
-        
+
+
         orders.setId(orderId);
         orders.setOrderTime(LocalDateTime.now());
         orders.setCheckoutTime(LocalDateTime.now());
@@ -95,7 +96,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
                 + (addressBook.getCityName() == null ? "" : addressBook.getCityName())
                 + (addressBook.getDistrictName() == null ? "" : addressBook.getDistrictName())
                 + (addressBook.getDetail() == null ? "" : addressBook.getDetail()));
-        
         //向订单表插入数据，一条数据
         this.save(orders);
 
@@ -103,6 +103,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         orderDetailService.saveBatch(orderDetails);
 
         //清空购物车数据
-        shoppingCartService.remove(queryWrapper);
+        shoppingCartService.remove(wrapper);
     }
+
+   
+
 }

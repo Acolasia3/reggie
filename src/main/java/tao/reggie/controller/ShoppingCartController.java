@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/shoppingCart")
 public class ShoppingCartController {
-
     @Autowired
     private ShoppingCartService shoppingCartService;
 
@@ -110,7 +109,7 @@ public class ShoppingCartController {
 
         LambdaQueryWrapper<ShoppingCart> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ShoppingCart::getUserId, currentId);
-        
+
         if (dishId != null) {
             //添加到购物车的是菜品
             queryWrapper.eq(ShoppingCart::getDishId, dishId);
@@ -124,6 +123,9 @@ public class ShoppingCartController {
             Integer number = cartServiceOne.getNumber();
             cartServiceOne.setNumber(number - 1);
             shoppingCartService.updateById(cartServiceOne);
+            if (number <= 0) {
+                shoppingCartService.remove(queryWrapper);
+            }
         }
         return R.success(cartServiceOne);
     }
