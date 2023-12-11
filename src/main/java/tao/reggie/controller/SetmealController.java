@@ -46,7 +46,7 @@ public class SetmealController {
     @Autowired
     private CacheManager cacheManager;
 
-    @GetMapping("/page")
+    @GetMapping("/page")    
     @ApiOperation("套餐分页分页接口")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", value = "页码", required = true),
@@ -63,7 +63,6 @@ public class SetmealController {
         queryWrapper.like(name != null, Setmeal::getName, name);
         //添加排序条件，根据更新时间降序排列
         queryWrapper.orderByDesc(Setmeal::getUpdateTime);
-
         setmealService.page(pageInfo, queryWrapper);
 
         //对象拷贝
@@ -144,7 +143,6 @@ public class SetmealController {
     @GetMapping("/{id}")
     public R<Setmeal> get(@PathVariable Long id) {
         SetmealDto setmealDto = setmealService.getByIdWithFlavor(id);
-
         return R.success(setmealDto);
     }
 
