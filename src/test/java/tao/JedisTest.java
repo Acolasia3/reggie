@@ -9,7 +9,7 @@ import java.util.Set;
  * @author 彭桂涛
  * @version 1.0
  */
-//使用Jedis操作Redis333
+//使用Jedis操作Redis3333
 public class JedisTest {
     @Test
     public void testRedis(){
