@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/addressBook")
 public class AddressBookController {
-
     @Autowired
     private AddressBookService addressBookService;
 
@@ -33,7 +32,7 @@ public class AddressBookController {
         addressBookService.save(addressBook);
         return R.success(addressBook);
     }
-
+    
     /**
      * 设置默认地址
      */
@@ -116,5 +115,4 @@ public class AddressBookController {
         return R.success("删除成功");
         
     }
-
 }

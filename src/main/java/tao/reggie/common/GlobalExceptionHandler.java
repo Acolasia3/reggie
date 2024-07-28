@@ -14,12 +14,15 @@ import java.sql.SQLIntegrityConstraintViolationException;
  * @version 1.0
  */
 @Slf4j
+//这里anntations利用注解指定处理的范围（使用RestController、controller注解的类里的所有函数都会进行异常处理）
 @ControllerAdvice(annotations = {RestController.class, Controller.class})
 @ResponseBody
+//全局异常统一处理1
 public class GlobalExceptionHandler {
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public R<String> exceptionHandler(SQLIntegrityConstraintViolationException ex) {
         log.error(ex.getMessage());
+        //java.sql.SQLIntegrityConstraintViolationException: Duplicate entry 'zhangsang' key 'idx_username'
         if (ex.getMessage().contains("Duplicate entry")) {
             String[] split = ex.getMessage().split(" ");
             String msg = split[2] + "已存在";

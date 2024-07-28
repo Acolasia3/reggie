@@ -26,6 +26,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
     /**
      * 新增菜品，同时保存对应的口味数据
+     *
      * @param dishDto
      */
     //开启事务
@@ -43,7 +44,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 //            item.setDishId(dishId);
 //            return item;
 //        }).collect(Collectors.toList());
-        
+
         //添加口味方法二：
         flavors.forEach(item -> item.setDishId(dishId));
         //保存菜品口味数据到菜品口味表dish_flavor
@@ -53,6 +54,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
     /**
      * 根据id查询菜品信息和对应的口味信息(实现数据回显)
+     *
      * @param id
      * @return
      */
@@ -61,11 +63,11 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         Dish dish = this.getById(id);
 
         DishDto dishDto = new DishDto();
-        BeanUtils.copyProperties(dish,dishDto);
+        BeanUtils.copyProperties(dish, dishDto);
 
         //查询当前菜品对应的口味信息，从dish_flavor表查询
         LambdaQueryWrapper<DishFlavor> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(DishFlavor::getDishId,dish.getId());
+        queryWrapper.eq(DishFlavor::getDishId, dish.getId());
         List<DishFlavor> flavors = dishFlavorService.list(queryWrapper);
         dishDto.setFlavors(flavors);
 
@@ -78,9 +80,10 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         //更新dish表基本信息
         this.updateById(dishDto);
 
+        //delete from dish_flavor where dish_id = #{dish_id};
         //清理当前菜品对应口味数据---dish_flavor表的delete操作
         LambdaQueryWrapper<DishFlavor> queryWrapper = new LambdaQueryWrapper();
-        queryWrapper.eq(DishFlavor::getDishId,dishDto.getId());
+        queryWrapper.eq(DishFlavor::getDishId, dishDto.getId());
         dishFlavorService.remove(queryWrapper);
 
         //添加当前提交过来的口味数据---dish_flavor表的insert操作
@@ -90,7 +93,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
             item.setDishId(dishDto.getId());
             return item;
         }).collect(Collectors.toList());
-        
+
 //        flavors.forEach(item -> item.setDishId(dishDto.getId()));
 
         dishFlavorService.saveBatch(flavors);
